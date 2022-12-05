@@ -1,0 +1,104 @@
+{% load humanize%}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+      {% include 'base/message.html' %}
+      <div class="invoice p-3 mb-3 invoice-wrapper">
+        <!-- title row -->
+        <div class="invoice-info">
+          <div class="row">
+            <div class="col-sm-12 text-center invoice-col">
+              <h3><i class="fas fa-globe"></i> AdminLTE, Inc.</h3>
+              <address>
+                795 Folsom Ave, Suite 600 san Francisco, CA 94107<br>
+                Phone: (804) 123-5432 Email: info@almasaeedstudio.com
+              </address>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- /.col -->
+            <div class="col-sm-8 invoice-col">
+              To
+              <address>
+                <strong><span id="inv_name">{{invoice_meta.people.name|capfirst}}</span></strong><br>
+                  <span id="inv_address">{{invoice_meta.people.address|capfirst}}</span><br>
+                Phone: <span id="inv_phone">{{invoice_meta.people.phone|capfirst}}</span><br>
+                Email: <span id="inv_email">{{invoice_meta.people.email}}</span>
+              </address>
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-4 invoice-col text-right" style="text-align:right">
+                <br><br><br>
+              <b>Invoice No: <span class="inv_no">{{invoice_meta.invoice_no|capfirst}}</span> </b><br>
+              <b>Date: <span class="inv_date">{{invoice_meta.invoice_at| date:"jS M, Y"}}</span></b>
+              <br>
+            </div>
+            <!-- /.col -->
+          </div>
+        <!-- Table row -->
+        <div class="row">
+          <div class="col-12 table-responsive">
+            <table class="table table-striped mb-0">
+              <thead>
+              <tr>
+                <th>S/N</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th style="text-align:right">Amount</th>
+              </tr>
+              </thead>
+              <tbody id="inv_products">
+                {% for items in details%}
+                <tr>
+                  <td>{{forloop.counter}}</td>
+                  <td style="width:49%">{{items.products.product_code}} - {{items.products.description}}</td>
+                  <td align="righ">{{items.quantity}}</td>
+                  <td>{{items.price|intcomma}}</td>
+                  <td align="right">{{items.amount|intcomma}}</td>
+                </tr>
+                {%endfor%}
+              
+              </tbody>
+            </table>
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+          <!-- accepted payments column -->
+          <div class="col-6">
+            
+            <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+              Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango imeem
+              plugg
+              dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
+            </p>
+          </div>
+          <!-- /.col -->
+          <div class="col-6">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <tbody>
+                <tr>
+                  <td style="width:72%" align="right"><b>Invoice Amount:</b></td>
+                  <td align="right"><span id="inv_subtotal">{{subtotal|intcomma}}</span></td>
+                </tr>
+                <tr>
+                  <td style="width:72%" align="right"><b>Current Balance:</b></td>
+                  <td align="right"><span id="balance">{{invoice_meta.people.balance|intcomma}}</span></td>
+                </tr>
+                
+              </tbody></table>
+            </div>
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+      </div>
+    </div>
+</section>
+<!-- /.content -->

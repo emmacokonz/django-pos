@@ -1,0 +1,86 @@
+{% extends 'base/base.html' %}
+{% load humanize%}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper" style="min-height: 2838.44px;">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>{{title}}</h1>
+          </div>
+          <div class="col-sm-6">
+            <div class="float-sm-right">
+                <a class="btn btn-sm btn-danger" href="{% url 'new_product' %}"><i class="fa fa-plus-circle"></i> New Product<a/>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          {% include 'base/message.html' %}
+          <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Quantity</th>
+                      <th>Reorder Point</th>
+                      <th>Price</th>
+                      <th>Status</th>
+                      <th align="right"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for product in products%}
+                    <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td>
+                        <a href="{% url "product_details" product.product_code %}" class="link">
+                          {% if product.status != 'disabled'%}<small class="fa fa-lock-open text-success"></small>{%else%} <small class="fa fa-lock text-danger"></small> {% endif%} 
+                          {{product.name}} 
+                          {% include 'includes/progress_bar.html'%}
+                        </a>
+                      </td>
+                      <td>{{product.quantity}}</td>
+                      <td>{{product.reorder_point}}</td>
+                      <td>{{product.selling_price|intcomma}}</td>
+                      <td>
+                        {% if product.status == 'disabled'%}
+                        <span class="badge badge-danger">{{product.status|capfirst}} <i class="fa fa-ban"></i> </span>
+                        {%elif product.status == 'in-stock'%}
+                        <span class="badge badge-success">{{product.status|capfirst}} <i class="fa fa-check"></i> </span>
+                        {%elif product.status == 'out-of-stock'%}
+                        <span class="badge badge-warning">{{product.status|capfirst}} <i class="fa fa-exclamation-circle"></i> </span>
+                        {%else%}
+                        <span class="badge badge-danger">error <i class="fa fa-times"></i> </span>
+                        {%endif%}
+                      </td>
+                      <td align="right">
+                        <a href='{% url "product_details" product.product_code %}' class="btn btn-xs btn-outline-info"><i class="fa fa-eye"></i> View</a>
+                        <a href="{% url 'edit_product' product.product_code %}" class="btn btn-xs btn-primary"> <i class="fa fa-edit"></i> Edit</a>
+                        <a href="{% url 'delete_product' product.product_code %}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                      </td>
+                    </tr>
+                    {% endfor%}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            
+          </div>
+        </div>
+    </section>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+

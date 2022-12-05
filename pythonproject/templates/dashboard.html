@@ -1,0 +1,186 @@
+<!-- templates/home.html -->
+{% extends 'base/base.html' %}
+{% load humanize%}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="content-wrapper" style="min-height: 2838.44px;">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>{{dashboard}}Dashboard__</h1>
+        </div>
+        <div class="col-sm-6">
+          <div class="float-sm-right">
+              shortcuts
+          </div>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+  <section class="content">
+    <div class="container-fluid">
+      
+      <div class="row">
+        <div class="col-lg-3 col-6">
+          <!-- small card -->
+          <div class="small-box bg-info">
+            <div class="inner">
+              <h3>150</h3>
+
+              <p>Total Sales</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-shopping-cart"></i>
+            </div>
+            <a href="#" class="small-box-footer">
+              More info <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small card -->
+          <div class="small-box bg-success">
+            <div class="inner">
+              <h3>150</h3>
+
+              <p>Cash Inflow</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa fa-dollar-sign"></i>
+            </div>
+            <a href="#" class="small-box-footer">
+              More info <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small card -->
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3>44</h3>
+
+              <p>Customers</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <a href="#" class="small-box-footer">
+              More info <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-6">
+          <!-- small card -->
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <h3>65</h3>
+
+              <p>Out of Stock</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-chart-pie"></i>
+            </div>
+            <a href="#" class="small-box-footer">
+              More info <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+        <!-- ./col -->
+      </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-8 col-lg-9 col-9 ">
+          <div class="table-responsive card">
+            <div class="card-header">Stock Position</div>
+            <table class="table table-condensed card-body">
+              <thead>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Quantity</th>
+                <th>Action</th>
+              </thead>
+            </table>
+          </div>
+        </div>
+        <div class="col-3 col-sm-12 col-md-4 col-lg-3">
+          <div class="card">
+            chart of products sold for the month
+            <div class="card-body"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+              <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 571px;" width="571" height="250" class="chartjs-render-monitor"></canvas>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+        <div class="table-responsive card">
+          <div class="card-header">Recent Transactions</div>
+          <table class="table table-condensed card-body">
+            <thead>
+              <th>Code</th>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Amount</th>
+              <th>Date</th>
+            </thead>
+          </table>
+        </div>
+      </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="row">
+            <div class="col-sm-6 col-md-4">
+              <div class="info-box">
+                <span class="info-box-icon bg-warning"><i class="far fa-flag"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Payables</span>
+                  <span class="info-box-number">85,960,350.00</span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <div class="info-box">
+                <span class="info-box-icon bg-danger"><i class="far fa-flag"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Receiveables</span>
+                  <span class="info-box-number">20,890,900.00</span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <div class="info-box">
+                <span class="info-box-icon bg-green"><i class="far fa-flag"></i></span>
+                <div class="info-box-content">
+                  <span class="info-box-text">Cash Available</span>
+                  <span class="info-box-number">85,955,450.00</span>
+                </div>
+                <!-- /.info-box-content -->
+              </div>
+              <!-- /.info-box -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+  <!-- Main content -->
+</div>
+
+
+
+{% endblock %}

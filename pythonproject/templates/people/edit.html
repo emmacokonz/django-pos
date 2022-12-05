@@ -1,0 +1,75 @@
+{% extends 'base/base.html' %}
+{% load humanize%}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper" style="min-height: 2838.44px;">
+    <!-- Content Header (Page header) -->
+    <form method="post" class="form-horizontal">
+    {% csrf_token %}
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>{{title}}</h1>
+          </div>
+          <div class="col-sm-6">
+            <div class="float-sm-right">
+                <button type="submit" class="btn btn-xs btn-success"><i class="fa fa-save"></i> Update {{person.people_type}}</button>
+                <a href="{% url 'people' %}" class="btn btn-outline-secondary btn-xs"><i class="fa fa-reply-all"></i> Back</a>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          {% include 'base/message.html' %}
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-12 pb-3">
+                  <label for="name">{{person.people_type|capfirst}} Name</label>
+                    {{form.name}}
+                </div>
+              </div>
+              <div class="row pb-3">
+                <div class="col-sm-6">
+                  <!-- text input -->
+                  <div class="form-group">
+                    <label for="email">Email Address</label>
+                    {{form.email}}
+                    
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    {{form.phone}}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-12">
+                  <label for="address">Contact Address</label>
+                  {{form.address}}
+                  <small class="text-muted small">Address to his business premisses or home address. <b>Note: will appear in invoice.</b></small>
+                </div>
+              </div>
+              
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-xs btn-success"><i class="fa fa-save"></i> Update {{person.people_type}}</button>
+                <a href="/" class="btn btn-outline-secondary btn-xs"><i class="fa fa-reply-all"></i> Back</a>
+            </div>
+        </div>
+        </div>
+    </section>
+    <form>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+

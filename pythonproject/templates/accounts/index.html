@@ -1,0 +1,72 @@
+{% extends 'base/base.html' %}
+{% load humanize%}
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper" style="min-height: 2838.44px;">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>{{title}}</h1>
+          </div>
+          <div class="col-sm-6">
+            <div class="float-sm-right">
+                <a class="btn btn-sm btn-danger" href="{% url 'new_account' %}"><i class="fa fa-plus-circle"></i> New Account</a>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          {% include 'base/message.html' %}
+          <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body p-0">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Account Name</th>
+                      <th>Type</th>
+                      <th style="text-align:right">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th><a href="{% url 'payables'%}">Payables</a></th>
+                      <th></th>
+                      <th style="text-align:right">{{payable|intcomma}}</th>
+                    </tr>
+                    <tr>
+                      <th><a href="{% url 'receiveables'%}">Receiveables</a></th>
+                      <th></th>
+                      <th style="text-align:right">{{receiveables|intcomma}}</th>
+                    </tr>
+                    {% if accounts.len != 0 %}
+                    {% for account in accounts%}
+                    <tr class="text-capitalize">
+                      <td><a href='{% url "get_account" account.id%}'>{{account.name}}</a></td>
+                      <td>{{account.account_type}}</td>
+                      <td style="text-align:right">
+                        {%if account.account_type != "expenses" %}
+                        {{account.account_balance|intcomma}}
+                        {% endif%}
+                      </td>
+                    </tr>
+                    {% endfor%}
+                    {%endif%}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+          </div>
+        </div>
+    </section>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+
