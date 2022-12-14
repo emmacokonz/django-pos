@@ -1,0 +1,111 @@
+{% extends 'base/base.html' %}
+{% load humanize%}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper" style="min-height: 2838.44px;">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>{{title}}</h1>
+          </div>
+          <div class="col-sm-6">
+            <div class="float-sm-right">
+              <a class="btn btn-xs btn-danger" href="{% url 'make_payment'%}"><i class="fa fa-plus-circle"></i> Make Payment<a/>
+              <a class="btn btn-xs btn-warning" href="{% url 'receive_payment'%}"><i class="fa fa-plus-circle"></i> Receive Payment<a/>
+              <a class="btn btn-xs btn-primary" href="{% url 'create_invoice'%}"><i class="fa fa-plus-circle"></i> New Invoice<a/>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          {% include 'base/message.html' %}
+          <section class="content">
+            <div class="row">
+              <div class="col-md-3">
+                <a href="{% url "new_people" %}" class="btn btn-primary  btn-block mb-3"><i class="fa fa-user-plus"></i> Create</a>
+      
+                <div class="card">
+                  <div class="card-body p-0">
+                    <ul class="nav nav-pills flex-column">
+                      {% for person in people%}
+                      <li class="nav-item active">
+                        <a href="{% url "people_details" person.id%}" class="nav-link">
+                          {% if person.people_type == 'customer' %}
+                          <i class="badge badge-info">C</i>
+                          {%else%}
+                          <i class="badge badge-primary">V</i>
+                          {%endif%}
+                          <span 
+                          {% if person.status == 'disabled'%}
+                          class="text-danger" style="font-style: italic"
+                          {% endif%} >
+                          
+                          {{person.name}}
+                          
+                          </span>
+                          <span class=" float-right">{{person.balance|intcomma}}</span>
+                      </a>
+                      </li>
+                      {% empty %}
+                      <li class="nav-item active">Sorry, no customer found!</li>
+                      {% endfor%}
+                    </ul>
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+              <!-- /.col -->
+              <div class="col-md-9">
+                <div class="card card-primary card-outline">
+                  <div class="card-header">
+                    <h3 class="card-title">Recent Transactions of all types</h3>
+      
+                    
+                    <!-- /.card-tools -->
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body p-0">
+                    
+                    <div class="table-responsive mailbox-messages">
+                      <table class="table table-hover table-striped">
+                        <tbody>
+                          {% for transaction in transactions%}
+                        <tr>
+                            
+                            <td class="mailbox-attachment">{{loop_counter}}</td>
+                            <td class="mailbox-name"><a href="read-mail.html">{{transaction.invoice_no}}</a></td>
+                            <td class="mailbox-subject">Invoice Type</td>
+                            <td class="mailbox-attachment">{{transaction.amount|intcomma}}{{transaction.invoice_amount|intcomma}}</td>
+                            <td class="mailbox-attachment">Processed By</td>
+                            <td class="mailbox-date">{{transaction.created_at}}</td>
+                        </tr>
+                        {% endfor%}
+                        </tbody>
+                      </table>
+                      <!-- /.table -->
+                    </div>
+                    <!-- /.mail-box-messages -->
+                  </div>
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+              <!-- /.col -->
+            </div>
+            <!-- /.row -->
+          </section>
+        </div>
+    </section>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+

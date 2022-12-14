@@ -1,0 +1,45 @@
+{% extends 'base/base.html' %}
+{% load humanize%}
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper" style="min-height: 2838.44px;">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>{{title}}</h1>
+          </div>
+          <div class="col-sm-6">
+            <form method="post">
+                <div class="float-sm-right">
+                    <button type="submit" class="btn btn-xs btn-danger" href="{% url 'delete_account' account.id %}"><i class="fa fa-trash"></i> Delete</button>
+                    <a class="btn btn-xs btn-default" href="{% url 'accounts' %}"><i class="fa fa-reply-all"></i> Cancle</a>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          {% include 'base/message.html' %}
+          <div class="card">
+              <!-- /.card-header -->
+              <div class="card-body">
+                {% if related_transaction_count > 0 %}
+                <b>This Account can't be deleted!!!</b>
+                <div>{{related_transactions}}</div>
+                {%endif%}
+              </div>
+              <!-- /.card-body -->
+          </div>
+        </div>
+    </section>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+

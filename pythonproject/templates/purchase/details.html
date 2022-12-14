@@ -1,0 +1,31 @@
+{% extends 'base/base.html' %}
+{% load humanize%}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper" style="min-height: 2838.44px;">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>{{title}}</h1>
+          </div>
+          <div class="col-sm-6">
+            <div class="float-sm-right">
+                <a class="btn btn-sm btn-danger btn-xs" href="{% url 'create_purchase'%}"><i class="fa fa-plus-circle"></i> New Purchase<a/>
+                <a class="btn btn-sm btn-outline-primary btn-xs" href="{% url 'edit_purchase' invoice_meta.invoice_no%}"><i class="fa fa-edit"></i> Edit<a/>
+                <a class="btn btn-sm btn-success btn-xs" id="print-invoice" href="{% url 'print_purchase' invoice_meta.invoice_no%}" rel="noopener" target="_blank"><i class="fa fa-print"></i> Print<a/>
+                <a class="btn btn-sm btn-outline-danger btn-xs" href="{% url 'delete_purchase' invoice_meta.invoice_no%}"><i class="fa fa-trash"></i> Delete<a/>
+                <a class="btn btn-sm btn-outline-secondary btn-xs" href="{% url 'purchase'%}"><i class="fa fa-reply-all"></i> Back<a/>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    {% include "includes/invoice_details.html"%}
+  </div>
+{% endblock %}
+

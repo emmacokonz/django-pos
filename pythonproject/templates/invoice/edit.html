@@ -1,0 +1,119 @@
+{% extends 'base/base.html' %}
+{% load humanize%}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+
+<div class="content-wrapper" style="min-height: 2838.44px;" xmlns="http://www.w3.org/1999/html">
+    <!-- Content Header (Page header) -->
+    <form method="post">
+        {% csrf_token %}
+        <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>{{title}} {{new_bal}} </h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-sm-right">
+                    <a class="btn btn-sm btn-danger btn-xs" href="{% url 'create_invoice'%}"><i class="fa fa-plus-circle"></i> New Invoice<a/>
+                    <button class="btn btn-success btn-xs" id="edit_invoice" type="submit"><i class="fa fa-save"></i> Update Invoice</button>
+                    <a class="btn btn-sm btn-outline-danger btn-xs" href="{% url 'delete_invoice' invoice.invoice_no%}"><i class="fa fa-trash"></i> Delete<a/>         
+                    <a class="btn btn-sm btn-default btn-xs" href="{% url 'invoice'%}"><i class="fa fa-reply-all"></i> Cancle<a/>
+                </div>
+            </div>
+            </div>
+        </div><!-- /.container-fluid -->
+        </section>
+    
+        <section class="content" id="invoice">
+            <div class="container-fluid">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-5">
+                          <div class="form-group">
+                              <label for="people">Customer Name</label>
+                              {{form.people}}
+                          </div>
+                            <div class="form-group">
+                                <label for="email">Customer Address</label>
+                                <div id="customer-details" class=" p-2" style="border:1px solid #cfcfcf;border-radius:5px">
+                                    <div>{{invoice.people.address}}</div>
+                                    <div>{{invoice.people.phone}}</div>
+                                    <div>{{invoice.people.email}}</div>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-3">
+                            <div class="text-riht">
+                                <label for="invoice_at">Date</label>
+                            </div>
+                            <div class="form-group text-right">
+                                {{form.invoice_at}}
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th  style="text-align:right">Amount</th>
+                                </tr>
+                                </thead>
+                                
+                               <tbody id='invoice-products'>
+                                 {{formset.management_form}}
+                                 {% for forms in formset%}
+                                    {{ forms.id }}
+                                    <tr>
+                                        <td style="display:none">{{forms.DELETE}}</td>
+                                        <td>{{forms.products}}</td>
+                                        <td>{{forms.quantity}}</td>
+                                        <td>{{forms.price}}</td>
+                                        <td align="right" class="invoice-amount invoice-item">
+                                            <div class="amount" id="id_invoice-{{forloop.counter0}}-amount">{{forms.amount}}</div>
+                                        </td>
+                                    </tr>
+                                {% endfor%}
+                                    <tr>
+                                        <td colspan="3" align="right"><b>Total:</b></td>
+                                        <td align="right"><div id='subtotal' class="invoice-item">{{invoice.invoice_amount|intcomma}}</div></td>
+                                    </tr>
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+                </div>
+                </div>
+            </div>
+        </section>
+    
+        <div class="card-footer col">
+            <div class="float-sm-right"> 
+                <a class="btn btn-sm btn-danger btn-xs" href="{% url 'create_invoice'%}"><i class="fa fa-plus-circle"></i> New Invoice<a/>
+                <button class="btn btn-success btn-xs" id="edit_invoice" type="submit"><i class="fa fa-save"></i> Update Invoice</button>
+                <a class="btn btn-sm btn-outline-danger btn-xs" href="{% url 'delete_invoice' invoice.invoice_no%}"><i class="fa fa-trash"></i> Delete<a/>         
+                <a class="btn btn-sm btn-default btn-xs" href="{% url 'invoice'%}"><i class="fa fa-reply-all"></i> Cancle<a/>
+            </div>
+        
+        
+        </div>
+    </form>
+</div>
+{% endblock %}
+

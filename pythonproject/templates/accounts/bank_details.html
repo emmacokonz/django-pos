@@ -1,0 +1,74 @@
+{% extends 'base/base.html' %}
+{% load humanize%}
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper" style="min-height: 2838.44px;">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>{{title}}</h1>
+          </div>
+          <div class="col-sm-6">
+            <div class="float-sm-right">
+              <a href="{%url 'new_account'%}" class="btn btn-xs btn-danger"><i class="fa fa-plus-circle"></i> New Account</a>
+              <a href="{%url 'edit_account' account.id%}" class="btn btn-xs btn-outline-primary"><i class="fa fa-pen"></i> Edit</a>
+              <a href="{%url 'delete_account' account.id%}" class="btn btn-xs btn-outline-danger"><i class="fa fa-trash"></i> Delete</a>
+              <a href="{%url 'accounts'%}" class="btn btn-xs btn-default"><i class="fa fa-reply-all"></i> Back</a>
+              
+            </div>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          {% include 'base/message.html' %}
+                <div class="card">
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Credit</th>
+                            <th>Debit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for account_activity in account_activities%}
+                          <tr>
+                            <td>{{account_activity.payment_at|date:"jS M, Y"}}</td>
+                            <td class="capfirst">{{account_activity.applied_to|capfirst}}</td>
+                            <td>{{account_activity.description}}</td>
+                            <td>{{account_activity.payment_type}}</td>
+                            <td>
+                              {% if account_activity.payment_type == 'sales'%}{{account_activity.amount|intcomma}}{%endif%}
+                              {% if account_activity.payment_type == 'TRF' and account_activity.to_account == this_bank%}{{account_activity.amount|intcomma}}{%endif%}
+                            </td>
+                            <td>
+                              {% if account_activity.payment_type == 'bill'%}-{{account_activity.amount|intcomma}}{%endif%}
+                              {% if account_activity.payment_type == 'TRF' and account_activity.from_account == this_bank%}-{{account_activity.amount|intcomma}}{%endif%}
+                              {% if account_activity.payment_type == 'expenses' and account_activity.from_account != '' %}-{{account_activity.amount|intcomma}}{%endif%}
+                            </td>
+                          </tr>
+                          {%endfor%}
+                        </tbody>
+                      </table>
+                    </div>
+                    <!-- /.card-body -->
+                  </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+

@@ -1,0 +1,85 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper" style="min-height: 2838.44px;">
+    <!-- Content Header (Page header) -->
+    <form method="post">
+      {% csrf_token %}
+        <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>{{title}}</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-sm-right">
+                    <button class="btn btn-xs btn-outline-success" ><i class="fa fa-save"></i> Save Account</button>
+                    <a href="{%url 'accounts'%}" class="btn btn-xs btn-default"><i class="fa fa-reply-all"></i> Back</a>
+                </div>
+            </div>
+            </div>
+        </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+              {% include 'base/message.html' %}
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12 pb-3">
+                                  <label for="name">Account Name</label>
+                                    {{form.name}}
+                                </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-sm-12">
+                                  <div class="form-group">
+                                    <label for="account_type">Account Type</label>
+                                    {{form.account_type}}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row pb-3 openings">
+                                <div class="col-sm-6">
+                                  <!-- text input -->
+                                  <div class="form-group">
+                                    <label for="opening-balance">Opening Balance</label>
+                                    {{form.opening_balance}}
+                                    <small class="text-muted small">Amount in account on creation.</small>
+                                  </div>
+                                </div>
+                                <div class="col-sm-6">
+                                  <div class="form-group">
+                                    <label for="opening_balance_at">Date</label>
+                                    {{form.opening_balance_at}}
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div class="row">
+                                <div class="col-sm-12">
+                                  <label for="address">Account Description</label>
+                                  {{form.description}}
+                                  <small class="text-muted small">Description of the purpose of account. <b>Note: will appear in cheques.</b></small>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="float-sm-right">
+                    <button class="btn btn-xs btn-outline-success" ><i class="fa fa-save"></i> Save Account</button>
+                    <a href="{%url 'accounts'%}" class="btn btn-xs btn-default"><i class="fa fa-reply-all"></i> Back</a>
+                </div>
+            </div>
+        </section>
+    </form>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+

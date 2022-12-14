@@ -1,0 +1,86 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper" style="min-height: 2838.44px;">
+    <!-- Content Header (Page header) -->
+    <form method="post">
+      {% csrf_token %}
+        <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>{{title}}</h1>
+            </div>
+            <div class="col-sm-6">
+                <div class="float-sm-right">
+                    <button class="btn btn-xs btn-outline-success" ><i class="fa fa-save"></i> Save Transfer</button>
+                    <a href="{%url 'payments'%}" class="btn btn-xs btn-default"><i class="fa fa-reply-all"></i> Back</a>
+                </div>
+            </div>
+            </div>
+        </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+              {% include 'base/message.html' %}
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row pb-3">
+                                <div class="col-sm-6">
+                                  <!-- text input -->
+                                  <div class="form-group">                                    
+                                  </div>
+                                </div>
+                                <div class="col-sm-6">
+                                  <div class="form-group">
+                                    <label for="opening_balance_at">Date</label>
+                                    {{form.payment_at}}
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="row pb-3">
+                                <div class="col-sm-6">
+                                  <!-- text input -->
+                                  <div class="form-group">
+                                    <label for="from_account">From Account</label>
+                                        {{form.from_account}}
+                                        <small class="text-muted small">From which account do you wish transfer from.</b></small>
+                                    
+                                  </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="to_account">To Account</label>
+                                        {{form.to_account}}
+                                        <small class="text-muted small">From which account do you wish to transfer to.</b></small>
+                                    </div>
+                                </div>
+                              </div>
+                              
+                              <div class="row">
+                                <div class="col-sm-12">
+                                  <label for="amount">Amount</label>
+                                  {{form.amount}}
+                                </div>
+                              </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="float-sm-right">
+                                <button class="btn btn-xs btn-outline-success" ><i class="fa fa-save"></i> Save Transfer</button>
+                                <a href="{%url 'payments'%}" class="btn btn-xs btn-default"><i class="fa fa-reply-all"></i> Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </section>
+    </form>
+    <!-- /.content -->
+  </div>
+{% endblock %}
+

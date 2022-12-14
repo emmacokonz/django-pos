@@ -1,0 +1,36 @@
+{% extends 'base/base.html' %}
+{% load humanize%}
+
+{% block title %}{{title}}{% endblock %}
+
+{% block content %}
+<div class="content-wrapper text-red" style="min-height: 2838.44px;">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>{{title}}</h1>
+          </div>
+          <div class="col-sm-6">
+            <div class="float-sm-right">
+                <form method="post">
+                    {% csrf_token%}
+                    <button type="submit" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> Delete Purchase</button>
+                    <a href="{% url back_link %}" class='btn btn-xs btn-default'><i class="fa fa-reply-all"></i> Cancle</a>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    {%if transaction.payment_type == 'TRF'%}
+    {% include 'includes/transfer_check.html'%}
+    {%elif transaction.payment_type == 'expenses' %}
+    {% include 'includes/expenses_check.html'%}
+    {% else%}
+    {% include 'includes/check.html'%}
+    {%endif%}
+  </div>
+{% endblock %}
+
