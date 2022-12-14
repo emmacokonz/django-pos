@@ -101,7 +101,8 @@ class InvoiceForm(forms.ModelForm):
         model = Invoice
         fields = [
             'people',
-            'invoice_at',
+            #'invoice_at',
+            'created_at',
         ]
         widgets = {
             'people': forms.Select(attrs={
@@ -109,12 +110,19 @@ class InvoiceForm(forms.ModelForm):
                 'id': 'customer-name',
                 'name': 'people',
             }),
-            'invoice_at': forms.DateInput(attrs={
+            ''' 'invoice_at': forms.DateInput(attrs={
                 'class': 'form-control',
                 'id': 'invoice_at',
                 'placeholder': 'Enter date create',
                 'type': 'date',
                 'name': 'invoice_at',
+            }),'''
+            'created_at': forms.DateInput(attrs={
+                'class': 'form-control',
+                'id': 'created_at',
+                'placeholder': 'Enter date create',
+                'type': 'date',
+                'name': 'created_at',
             }),
         }
         

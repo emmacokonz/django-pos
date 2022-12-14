@@ -37,7 +37,7 @@ class Account_activities(models.Model):
     amount = models.DecimalField(decimal_places=2, max_digits=24, null=True, blank=False)
     payment_type = models.CharField(max_length=50, default='',blank=True, choices=PAYMENT_TYPE_CHOICE,null=True)
     #payment_at = models.DateField(default=timezone.now)
-    payment_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
     applied_by = models.ForeignKey(User, on_delete=models.SET_NULL,null=True)
     applied_to = models.ForeignKey(People, on_delete=models.SET_NULL,null=True)
     description = models.CharField( max_length=250, null=True, blank=True)

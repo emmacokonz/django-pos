@@ -53,7 +53,8 @@ class Payment_form(forms.ModelForm):
             "applied_to",
             'description',
             "amount",
-            "payment_at",
+            #"payment_at",
+            'created_at',
             "to_account",
             'from_account',
             "payment_type"
@@ -71,9 +72,9 @@ class Payment_form(forms.ModelForm):
                 'name': 'description',
                 'placeholder': 'description for the payment.',
             }),
-            'payment_at': forms.DateInput(attrs={
+            'created_at': forms.DateInput(attrs={
                 'class': 'form-control',
-                'name': 'payment_at',
+                'name': 'created_at',
                 'type': 'date',
             }),
             'amount': forms.NumberInput(attrs={
@@ -102,14 +103,20 @@ class Transfer_form(forms.ModelForm):
         model = Account_activities
         fields = [
             "amount",
-            "payment_at",
+            #"payment_at",
+            "created_at",
             "to_account",
             'from_account',
         ]
         widgets = {
-            'payment_at': forms.DateInput(attrs={
+            ''''payment_at': forms.DateInput(attrs={
                 'class': 'form-control',
                 'name': 'payment_at',
+                'type': 'date',
+            }),'''
+            'created_at': forms.DateInput(attrs={
+                'class': 'form-control',
+                'name': 'created_at',
                 'type': 'date',
             }),
             'amount': forms.NumberInput(attrs={
@@ -136,14 +143,20 @@ class Expenses_form(forms.ModelForm):
         fields = [
             "amount",
             "description",
-            "payment_at",
+            #"payment_at",
+            "created_at",
             "to_account",
             'from_account',
         ]
         widgets = {
-            'payment_at': forms.DateInput(attrs={
+            ''''payment_at': forms.DateInput(attrs={
                 'class': 'form-control',
                 'name': 'payment_at',
+                'type': 'date',
+            }),'''
+            'created_at': forms.DateInput(attrs={
+                'class': 'form-control',
+                'name': 'created_at',
                 'type': 'date',
             }),
             'description': forms.Textarea(attrs={
