@@ -72,7 +72,7 @@ class Invoice(models.Model):
     invoice_no = models.CharField(max_length=80, blank=True)
     total_quantity = models.DecimalField(decimal_places=1, default=0.0, max_digits=9)
     invoice_amount = models.DecimalField(decimal_places=2, default=0.00, max_digits=20)
-    invoice_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now)
     people = models.ForeignKey(People, on_delete=models.SET_NULL, null=True)
     invoice_type = models.CharField(max_length=20,choices=CHOICE_OPTION)
     
