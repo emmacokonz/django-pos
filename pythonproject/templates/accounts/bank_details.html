@@ -45,7 +45,7 @@
                         <tbody>
                           {% for account_activity in account_activities%}
                           <tr>
-                            <td>{{account_activity.payment_at|date:"jS M, Y"}}</td>
+                            <td>{{account_activity.created_at|date:"jS M, Y"}}</td>
                             <td class="capfirst">{{account_activity.applied_to|capfirst}}</td>
                             <td>{{account_activity.description}}</td>
                             <td>{{account_activity.payment_type}}</td>

@@ -50,7 +50,7 @@
                             <td>{{payment.amount|intcomma}}</td>
                             <td>{{payment.description|capfirst}}</td>
                             <td>{{payment.payment_type|capfirst}}</td>
-                            <td>{{payment.payment_at|date:"jS M, Y"}}</td>
+                            <td>{{payment.created_at|date:"jS M, Y"}}</td>
                             <td align="right">
                               {% if payment.payment_type == 'TRF'%}
                                 <a href="{% url 'transfer' payment.id%}" class="btn btn-primary btn-xs"><i class="fa fa-link"></i> view</a>

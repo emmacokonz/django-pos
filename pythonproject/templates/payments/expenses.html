@@ -44,7 +44,7 @@
                         <tbody>
                             {% for payment in payments%}
                         <tr>
-                            <td>{{payment.payment_at|date:"jS M, Y"}}</td>
+                            <td>{{payment.created_at|date:"jS M, Y"}}</td>
                             <td>{{payment.description|capfirst}}</td>
                             <td>{{payment.from_account|capfirst}}</td>
                             <td>{{payment.to_account|capfirst}}</td>

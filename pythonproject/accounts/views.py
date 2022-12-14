@@ -221,7 +221,7 @@ def make_payment(request):
                 'amount': form.cleaned_data['amount'],
                 'payment_type': BILL,
                 'applied_by': request.user,
-                'payment_at': form.cleaned_data['payment_at'],
+                'created_at': form.cleaned_data['created_at'],
             }
             if data['description'] == None:
                 data['description'] = description
@@ -256,7 +256,7 @@ def receive_payment(request):
                 'amount': form.cleaned_data['amount'],
                 'payment_type': SALES,
                 'applied_by': request.user,
-                'payment_at': form.cleaned_data['payment_at'],
+                'created_at': form.cleaned_data['created_at'],
             }
             if data['description'] == None:
                 data['description'] = description
@@ -297,7 +297,7 @@ def edit_payment(request, payment_id):
                 'applied_to': People.objects.get(name=form.cleaned_data['applied_to']),
                 'description': form.cleaned_data['description'],
                 'amount': form.cleaned_data['amount'],
-                'payment_at': form.cleaned_data['payment_at'],
+                'created_at': form.cleaned_data['created_at'],
                 'payment_type': payment_instance.payment_type,
             }
             if payment_instance.payment_type == BILL:
@@ -382,7 +382,7 @@ def make_transfer(request):
                 'amount': form.cleaned_data['amount'],
                 'payment_type': TRF,
                 'applied_by': request.user,
-                'payment_at': form.cleaned_data['payment_at'],
+                'created_at': form.cleaned_data['created_at'],
             }
 
             if data['to_account'] != data['from_account']:
@@ -444,7 +444,7 @@ def edit_transfer(request, transfer_id):
                 'amount': form.cleaned_data['amount'],
                 'payment_type': TRF,
                 'applied_by': request.user,
-                'payment_at': form.cleaned_data['payment_at'],
+                'created_at': form.cleaned_data['created_at'],
             }
 
             if data['to_account'] != data['from_account']:
@@ -542,7 +542,7 @@ def new_expenses(request):
                 'amount': form.cleaned_data['amount'],
                 'payment_type': EXPENSES,
                 'applied_by': request.user,
-                'payment_at': form.cleaned_data['payment_at'],
+                'created_at': form.cleaned_data['created_at'],
             }
 
             data['from_account'].account_balance = data['from_account'].account_balance - data['amount']
@@ -588,7 +588,7 @@ def edit_expenses(request, expenses_id):
                 'amount': form.cleaned_data['amount'],
                 'payment_type': EXPENSES,
                 'applied_by': request.user,
-                'payment_at': form.cleaned_data['payment_at'],
+                'created_at': form.cleaned_data['created_at'],
             }
 
             if current_expense_bank == data['from_account']:
