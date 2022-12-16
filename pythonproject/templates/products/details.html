@@ -54,15 +54,6 @@
                   <dl class="row">
                     <dt class="col-sm-4">Product Name:</dt>
                     <dd class="col-sm-8">{{product.name|capfirst}}</dd>
-                    <dt class="col-sm-4">Quantity:</dt>
-                    <dd class="col-sm-8">
-                      {{product.quantity}} 
-                      {% if product.quantity <= 0 %}
-                      <span class="badge badge-danger p-1">out of stock</span>
-                      {% elif  product.quantity <= product.reorder_point %}
-                        <span class="badge badge-warning p-1">stock is low. Stock up now</span>
-                      {% endif%}
-                    </dd>
                     <dt class="col-sm-4">Price:</dt>
                     <dd class="col-sm-8">
                       {{product.selling_price|floatformat:2|intcomma}}
@@ -80,18 +71,15 @@
                 </div>
                 <div class="col-sm-6">
                   <dl class="row">
-                    <dt class="col-sm-4">Created By:</dt>
-                    <dd class="col-sm-8">{{product.created_by|capfirst}}</dd>
-                    <dt class="col-sm-4">Purchase Amount:</dt>
-                    <dd class="col-sm-8">{{product_amount_purchased|floatformat:2|intcomma}}</dd>
-                    <dt class="col-sm-4">Sales Amount:</dt>
-                    <dd class="col-sm-8">{{product_amount_sold|floatformat:2|intcomma}}</dd>
-                    <dt class="col-sm-4">Quantity Sold:</dt>
-                    <dd class="col-sm-8">{{total_quantity_sold|floatformat:1|intcomma}}</dd>
-                    <dt class="col-sm-4">Quantity Purchased:</dt>
-                    <dd class="col-sm-8">{{total_quantity_purchased|floatformat:1|intcomma}}</dd>
-                    <dt class="col-sm-4">Revenue:</dt>
-                    <dd class="col-sm-8">{{revenue|floatformat:2|intcomma}}</dd>
+                    <dt class="col-sm-4">Quantity in Stock:</dt>
+                    <dd class="col-sm-8">
+                      {{product.quantity}} 
+                      {% if product.quantity <= 0 %}
+                      <span class="badge badge-danger p-1">out of stock</span>
+                      {% elif  product.quantity <= product.reorder_point %}
+                        <span class="badge badge-warning p-1">stock is low. Stock up now</span>
+                      {% endif%}
+                    </dd>
                   </dl>
                 </div>
                 {% if product.status == 'disabled' %}
@@ -116,26 +104,14 @@
             </div>
             <div class="card-body" style="display: block;">
               <table class="table table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Invoice No</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Amount</th>
-                    <th>Type</th>
-                    <th align="right"></th>
-                  </tr>
-                </thead>
+                
                 <tbody>
                   {% for activity in product_activities %}
                   <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{activity.invoice_no}}</td>
-                    <td>{{activity.quantity|floatformat:1|intcomma}}</td>
-                    <td>{{activity.price|floatformat:2|intcomma}}</td>
-                    <td>{{ activity.amount|floatformat:2|intcomma }}</td>
-                    <td>{{ activity.type|capfirst }}</td>
+                    <td><a href="{% url 'view_invoice' activity.invoice_no%}">{{activity.invoice_no}}</a></td>
+                    <td>{{activity.type|intcomma}}</td>
+                    <td>{{activity.invoiced_at|date:"jS M, Y"}}</td>
+                    <td align="right">{{ activity.amount|floatformat:2|intcomma }}</td>
                     <td align="right">
                       <a href="{% url 'view_invoice' activity.invoice_no%}" class="btn btn-outline-primary btn-xs"><i class="fa fa-eye"></i> View invoice</a>
                     </td>

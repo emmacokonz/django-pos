@@ -81,12 +81,22 @@
                           {% for transaction in transactions%}
                         <tr>
                             
-                            <td class="mailbox-attachment">{{loop_counter}}</td>
-                            <td class="mailbox-name"><a href="read-mail.html">{{transaction.invoice_no}}</a></td>
-                            <td class="mailbox-subject">Invoice Type</td>
+                            <td class="mailbox-name">
+                              <a href="
+                              {%if transaction.payment_type == 'sales' or transaction.payment_type == 'bill'%}{%url 'payment' transaction.id%}{%endif%}
+                              {%if transaction.invoice_type == 'sales' or transaction.invoice_type == 'purchase' %}{%url 'view_invoice' transaction.invoice_no%}{%endif%}
+                              ">
+                                {{transaction.people.name|capfirst}}
+                                {{transaction.applied_to.name|capfirst}}
+                              </a>
+                            </td>
+                            <td class="mailbox-subject">
+                              {%if transaction.invoice_type == 'sales' or transaction.invoice_type == 'purchase' %}{{transaction.invoice_type|capfirst}} Invoice{%else%}{{transaction.invoice_type|capfirst}}{%endif%}
+                              {%if transaction.payment_type == 'sales' or transaction.payment_type == 'bill' %}{{transaction.payment_type|capfirst}} Payment{%else%}{{transaction.payment_type|capfirst}}{%endif%}
+
+                            </td>
                             <td class="mailbox-attachment">{{transaction.amount|intcomma}}{{transaction.invoice_amount|intcomma}}</td>
-                            <td class="mailbox-attachment">Processed By</td>
-                            <td class="mailbox-date">{{transaction.created_at}}</td>
+                            <td class="mailbox-date">{{transaction.created_at|date:"jS M, Y"}}</td>
                         </tr>
                         {% endfor%}
                         </tbody>

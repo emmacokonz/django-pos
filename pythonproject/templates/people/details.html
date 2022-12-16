@@ -74,7 +74,7 @@
                 <div class="col-sm-6">
                   <dl class="row">
                     <dt class="col-sm-4">Current Balance:</dt>
-                    <dd class="col-sm-8">0.00</dd>
+                    <dd class="col-sm-8"><strong class='text-red'>{{person.balance|intcomma}}</strong></dd>
                   </dl>
                 </div>
                 {% if product.status == 'disabled' %}
@@ -99,32 +99,33 @@
             </div>
             <div class="card-body" style="display: block;">
               <table class="table table-striped table-condensed">
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Invoice No</th>
-                    <th>Quantity</th>
-                    <th>Price</th>
-                    <th>Amount</th>
-                    <th>Type</th>
-                    <th align="right"></th>
-                  </tr>
-                </thead>
+                
                 <tbody>
-                  {% for activity in product_activities %}
-                  <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{activity.invoice_no}}</td>
-                    <td>{{activity.quantity|floatformat:1|intcomma}}</td>
-                    <td>{{activity.price|floatformat:2|intcomma}}</td>
-                    <td>{{ activity.amount|floatformat:2|intcomma }}</td>
-                    <td>{{ activity.type|capfirst }}</td>
-                    <td align="righ">
-                      <a href="" class="btn btn-outline-primary btn-xs"><i class="fa fa-eye"></i> View invoice</a>
-                    </td>
-                    
-                  </tr>
-                  {% endfor%}
+                  {% for transaction in transactions%}
+                        <tr>
+                          <td class="mailbox-attachment">
+                            <a href="
+                              {%if transaction.payment_type == 'sales' or transaction.payment_type == 'bill'%}{%url 'payment' transaction.id%}{%endif%}
+                              {%if transaction.invoice_type == 'sales' or transaction.invoice_type == 'purchase' %}{%url 'view_invoice' transaction.invoice_no%}{%endif%}
+                              ">
+                              {{transaction.invoice_no|capfirst}}
+                              {%if transaction.payment_type == 'sales'%}
+                              {{transaction.to_account|capfirst}}
+                              {%else%}
+                              {{transaction.from_account|capfirst}}
+                              {% endif%}
+                              </a>
+                          </td>
+                          <td class="mailbox-subject">
+                            {%if transaction.invoice_type == 'sales' or transaction.invoice_type == 'purchase' %}{{transaction.invoice_type|capfirst}} Invoice{%else%}{{transaction.invoice_type|capfirst}}{%endif%}
+                            {%if transaction.payment_type == 'sales' or transaction.payment_type == 'bill' %}{{transaction.payment_type|capfirst}} Payment{%else%}{{transaction.payment_type|capfirst}}{%endif%}
+                          </td>
+                          <td class="mailbox-date">{{transaction.created_at|date:"jS M, Y"}}</td> 
+                          <td align="right" class="mailbox-attachment">{{transaction.amount|intcomma}}{{transaction.invoice_amount|intcomma}}</td>
+
+                        </tr>
+                        {% endfor%}
+                        </tbody>
                 </tbody>
               </table>
             </div>

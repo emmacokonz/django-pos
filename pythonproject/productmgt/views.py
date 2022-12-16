@@ -3,6 +3,8 @@ from datetime import datetime
 from decimal import Decimal
 from os import name
 from turtle import st
+from itertools import chain
+from operator import attrgetter
 from urllib.parse import urlparse
 from django.contrib import messages
 from django.http import Http404
@@ -14,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import (InvoiceDetailsForm, InvoiceDetailsFormSet, InvoiceForm, product_form, people_form)
 from django.forms import inlineformset_factory
 from .models import (Products, Invoice, People, InvoiceActivities, )
+from accounts.models import (Account_activities, Accounts)
 
 
 # Create your views here.
@@ -36,19 +39,11 @@ def productDetails(request, product_code):
     for tt in invActivities:
         tt.amount = tt.price * tt.quantity
         tt.type = get_invoice_details_by_id(tt.invoice_no_id).invoice_type
-    amount_sold = product_revenue_activity(thisProduct.id,'sales',thisProduct.selling_price)
-    amount_purchased = product_revenue_activity(thisProduct.id,'purchase',thisProduct.cost_price)
-    revenue = (amount_sold['average_price'] - amount_purchased["average_price"])*amount_sold["total_quantity_invoiced"]
     
     context = {
         "product": thisProduct,
         'product_activities': invActivities,
         "title" : "Details about "+ thisProduct.name,
-        'product_amount_sold' : amount_sold["total_amount"],
-        'product_amount_purchased' : amount_purchased['total_amount'],
-        'total_quantity_sold': amount_sold["total_quantity_invoiced"],
-        "total_quantity_purchased": amount_purchased["total_quantity_invoiced"],
-        'revenue' : revenue,
         }
     return render(request, 'products/details.html', context)
 
@@ -144,22 +139,29 @@ def disable_product(request, product_code):
     
 @login_required
 def people(request):
-    people=People.objects.all()
+    people=People.objects.all().order_by("id")
+    payments = Account_activities.objects.filter(Q(payment_type='sales') | Q(payment_type = 'bill')).order_by("id")
+    invoices = Invoice.objects.all().order_by("id")
+    result_list =  sorted(chain(payments,invoices),reverse=True,key=attrgetter('created_at'))
     
     context={
         "people":people,
         'title': 'People',
+        'transactions': result_list
     }
     return render(request,'people/index.html',context)
 
 @login_required
 def peopleDetails(request, people_id):
     person = People.objects.get(pk=people_id)
-    person_activity = ' '
+    payments = Account_activities.objects.filter(Q(Q(payment_type='sales') | Q(payment_type = 'bill')) and Q(applied_to = person)).order_by("id")
+    invoices = Invoice.objects.filter(people = person).order_by("id")
+    result_list =  sorted(chain(payments,invoices),reverse=True,key=attrgetter('created_at'))
     
     context={
         'person':person,
-        'title': 'Details about  '+person.name
+        'title': 'Details about  '+person.name,
+        'transactions': result_list,
     }
     if person.status == 'disabled':
         messages.warning(request, person.name+' is deactivated and will not be available for invoicing and payments untill you activate it.')
