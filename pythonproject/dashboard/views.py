@@ -42,16 +42,19 @@ def index(request):
     return render(request, 'dashboard.html', context)
 
 def get_customers_revenue():
-    customer_revenue = People.objects.filter(
-        people_type = "customer").annotate(
-        customer_invoice_amount_sum = Sum('invoice__invoice_amount', default=0, filter=Q(invoice__created_at__range=(get_settings_date_range()[0],get_settings_date_range()[1])))).annotate(
-        total_invoice_amount = Sum('invoice__invoice_amount', default=0, filter=Q(invoice__created_at__range=(get_settings_date_range()[0],get_settings_date_range()[1])))).values_list(
-        'name','customer_invoice_amount_sum','total_invoice_amount', named=True).order_by(
+    customers_revenue = People.objects.filter(people_type = "customer").annotate(
+        customer_invoice_amount_sum = Sum('invoice__invoice_amount', default=0, filter=Q(invoice__created_at__range=(get_settings_date_range()[0],get_settings_date_range()[1])))).values(
+        'name','customer_invoice_amount_sum').order_by(
         "-customer_invoice_amount_sum")[:5]
+    total_revenue = People.objects.filter(people_type = 'customer').aggregate(
+        total_invoice_amount = Sum('invoice__invoice_amount', default=0, filter=Q(invoice__created_at__range=(get_settings_date_range()[0],get_settings_date_range()[1]))))
+   
+    for cr in customers_revenue :
+        p = float(cr['customer_invoice_amount_sum']) * 100/float(total_revenue['total_invoice_amount'])
+        cr['percentage'] = p
+       
     
-    print(customer_revenue)
-    
-    return customer_revenue
+    return customers_revenue
 
 
 def calculate_cash():
@@ -60,7 +63,7 @@ def calculate_cash():
 
 def calculate_payables():
     people_instance = People.objects.filter(Q(people_type='vendor') & Q(status='active')).aggregate(sum_total = Sum('balance'))
-    print(people_instance)
+    
     return people_instance
 
 
@@ -71,20 +74,14 @@ def calculate_receiveables():
 
 
 def get_latest_transactions():
-    people=People.objects.all().order_by("id")
-    payments = Account_activities.objects.filter(Q(payment_type='sales') | Q(payment_type = 'bill')).order_by("id")
-    invoices = Invoice.objects.all().order_by("id")
+    payments = Account_activities.objects.filter(Q(payment_type='sales') | Q(payment_type = 'bill')).order_by("-id")
+    invoices = Invoice.objects.all().order_by("-id")
     result_list =  sorted(chain(payments,invoices),reverse=True,key=attrgetter('created_at'))[:10]
     
     return result_list
 
 def get_top_stocks():
-    '''most_sold_products = Products.objects.select_related('invoiceactivities').annotate(stock_out_sum = Sum(
-        Case(
-            When(invoiceactivities__invoice_no__invoice_type = SALES, then= Value('invoiceactivities__quantity')),
-        default=1, output_field=CharField())
-        )).values_list('name','stock_out_sum','quantity')'''
-
+   
     most_sold_products = Products.objects.filter(
         invoiceactivities__invoice_no__invoice_type = SALES).annotate(
         current_stock_out_sum = Sum('invoiceactivities__quantity', default=0, filter=Q(invoiceactivities__invoice_no__created_at__range=(get_settings_date_range()[0],get_settings_date_range()[1])))).annotate(
@@ -114,7 +111,7 @@ def get_total_customers():
 
 def get_cash_inflow():
     
-    cash = Account_activities.objects.filter(payment_type=SALES,created_at__range=(get_settings_date_range()[0],get_settings_date_range()[1])).aggregate(cash_inflow = Sum('amount')) 
+    cash = Account_activities.objects.filter(payment_type=SALES,created_at__range=(get_settings_date_range()[0],get_settings_date_range()[1])).aggregate(cash_inflow = Sum('amount', default=0)) 
     return cash
 
 def get_total_sales():
