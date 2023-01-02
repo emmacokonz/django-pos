@@ -51,7 +51,7 @@
                             <td>{{purchase.people.name|capfirst}}</td>
                             <td>{{purchase.total_quantity}}</td>
                             <td>{{purchase.invoice_amount|intcomma}}</td>
-                            <td>{{purchase.invoice_at|date:"jS M, Y"}}</td>
+                            <td>{{purchase.created_at|date:"jS M, Y"}}</td>
                             <td align="right">
                                 <a href="{% url 'view_purchase' purchase.invoice_no%}" class="btn btn-primary btn-xs"><i class="fa fa-link"></i> view</a>
                                 <a class="btn btn-sm btn-primary btn-xs" href="{% url 'edit_purchase' purchase.invoice_no%}"><i class="fa fa-edit"></i> Edit<a/>

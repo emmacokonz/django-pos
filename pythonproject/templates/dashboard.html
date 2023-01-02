@@ -30,7 +30,7 @@
           <!-- small card -->
           <div class="small-box bg-info">
             <div class="inner">
-              <h3>150</h3>
+              <h3>{{total_sales}}</h3>
 
               <p>Total Sales</p>
             </div>
@@ -47,7 +47,7 @@
           <!-- small card -->
           <div class="small-box bg-success">
             <div class="inner">
-              <h3>150</h3>
+              <h3> {{cash_inflows|intcomma}}</h3>
 
               <p>Cash Inflow</p>
             </div>
@@ -64,7 +64,7 @@
           <!-- small card -->
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3>44</h3>
+              <h3>{{customers}}</h3>
 
               <p>Customers</p>
             </div>
@@ -81,7 +81,7 @@
           <!-- small card -->
           <div class="small-box bg-danger">
             <div class="inner">
-              <h3>65</h3>
+              <h3>{{products}}</h3>
 
               <p>Out of Stock</p>
             </div>
@@ -98,25 +98,52 @@
       <div class="row">
         <div class="col-sm-12 col-md-8 col-lg-9 col-9 ">
           <div class="table-responsive card">
-            <div class="card-header">Stock Position</div>
+            <div class="card-header">Stock position {{filter}}</div>
             <table class="table table-condensed card-body">
               <thead>
                 <th>Product</th>
                 <th>Status</th>
-                <th>Quantity</th>
-                <th>Action</th>
+                <th>Quantity in-stock</th>
+                <th>Quantity Sold</th>
+                <th></th>
               </thead>
+              <tbody>
+                {%for top_stock in top_stocks%}
+                  <tr>
+                    <td>{{top_stock.name}}</td>
+                    <td>{{top_stock.status}}</td>
+                    <td>{{top_stock.quantity}}</td>
+                    <td>{{top_stock.current_stock_out_sum}}</td>
+                    <td>
+                      {%if top_stock.current_stock_out_sum > top_stock.previous_stock_out_sum  %}
+                      <i class="fa fa-arrow-up fa-beat text-green"></i>
+                      {%else%}
+                      <i class="fa fa-arrow-down fa-beat text-red"></i>
+                      {%endif%}
+                    </td>
+                  </tr>
+                {%endfor%}
+                </tbody>
             </table>
           </div>
         </div>
         <div class="col-3 col-sm-12 col-md-4 col-lg-3">
           <div class="card">
-            chart of products sold for the month
-            <div class="card-body"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-              <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%; display: block; width: 571px;" width="571" height="250" class="chartjs-render-monitor"></canvas>
+            <div class="card-header">
+              Customers revenue {{filter}}
+            </div>
+            <div class="card-body">
+              {% for customer_revenue in customers_revenue%}
+              <div class="progress mb-3">
+                <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{customer_revenue.customer_invoice_amount_sum}}" aria-valuemin="0" aria-valuemax="{{customer_revenue.total_invoice_amount}}" style="width: {{customer_revenue.customer_invoice_amount_sum}}%">
+                  <span class="sr-only">{{customer_revenue.customer_invoice_amount_sum}} Complete (success)</span>
+                </div>
+              </div>
+              {% endfor%}
             </div>
             <!-- /.card-body -->
           </div>
+          
         </div>
       </div>
       <div class="row">
@@ -124,13 +151,29 @@
         <div class="table-responsive card">
           <div class="card-header">Recent Transactions</div>
           <table class="table table-condensed card-body">
-            <thead>
-              <th>Code</th>
-              <th>Name</th>
-              <th>Quantity</th>
-              <th>Amount</th>
-              <th>Date</th>
-            </thead>
+            <tbody>
+              {%for transaction in latest_transactions%}
+              <tr>
+                <td class="mailbox-name">
+                  <a href="
+                  {%if transaction.payment_type == 'sales' or transaction.payment_type == 'bill'%}{%url 'payment' transaction.id%}{%endif%}
+                  {%if transaction.invoice_type == 'sales' or transaction.invoice_type == 'purchase' %}{%url 'view_invoice' transaction.invoice_no%}{%endif%}
+                  ">
+                    {{transaction.people.name|capfirst}}
+                    {{transaction.applied_to.name|capfirst}}
+                  </a>
+                </td>
+                <td class="mailbox-subject">
+                  {%if transaction.invoice_type == 'sales' or transaction.invoice_type == 'purchase' %}{{transaction.invoice_type|capfirst}} Invoice{%else%}{{transaction.invoice_type|capfirst}}{%endif%}
+                  {%if transaction.payment_type == 'sales' or transaction.payment_type == 'bill' %}{{transaction.payment_type|capfirst}} Payment{%else%}{{transaction.payment_type|capfirst}}{%endif%}
+
+                </td>
+                <td class="mailbox-attachment">{{transaction.amount|intcomma}}{{transaction.invoice_amount|intcomma}}</td>
+                <td class="mailbox-date">{{transaction.created_at|date:"jS M, Y"}}</td>
+              </tr>
+              {%endfor%}
+            </tbody>
+            
           </table>
         </div>
       </div>
@@ -144,7 +187,7 @@
                 <span class="info-box-icon bg-warning"><i class="far fa-flag"></i></span>
                 <div class="info-box-content">
                   <span class="info-box-text">Payables</span>
-                  <span class="info-box-number">85,960,350.00</span>
+                  <span class="info-box-number">{{payables.sum_total|intcomma}}</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -155,7 +198,7 @@
                 <span class="info-box-icon bg-danger"><i class="far fa-flag"></i></span>
                 <div class="info-box-content">
                   <span class="info-box-text">Receiveables</span>
-                  <span class="info-box-number">20,890,900.00</span>
+                  <span class="info-box-number">{{receiveables.sum_total|intcomma}}</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
@@ -166,7 +209,7 @@
                 <span class="info-box-icon bg-green"><i class="far fa-flag"></i></span>
                 <div class="info-box-content">
                   <span class="info-box-text">Cash Available</span>
-                  <span class="info-box-number">85,955,450.00</span>
+                  <span class="info-box-number">{{cash.sum_total|intcomma}}</span>
                 </div>
                 <!-- /.info-box-content -->
               </div>
