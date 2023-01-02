@@ -23,6 +23,6 @@ urlpatterns = [
     path('', include('accounts.urls')), 
     path('admin/', admin.site.urls),
     path("", include("django.contrib.auth.urls")),
-    path('', TemplateView.as_view(template_name='dashboard.html'), name='dashboard'),
-    path('dashboard', TemplateView.as_view(template_name='dashboard.html'), name='dashboard'),
+    path('dashboard/', include('dashboard.urls')),
+    path('', include('dashboard.urls')),
 ]
