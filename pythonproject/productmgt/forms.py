@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import formset_factory
-from .models import (InvoiceActivities, Products, Invoice, People, Accounts)
+from .models import (InvoiceActivities, Products, Invoice, People,)
 
 class product_form(forms.ModelForm):
     class Meta:
@@ -110,19 +110,10 @@ class InvoiceForm(forms.ModelForm):
                 'id': 'customer-name',
                 'name': 'people',
             }),
-            ''' 'invoice_at': forms.DateInput(attrs={
-                'class': 'form-control',
-                'id': 'invoice_at',
-                'placeholder': 'Enter date create',
-                'type': 'date',
-                'name': 'invoice_at',
-            }),'''
             'created_at': forms.DateInput(attrs={
-                'class': 'form-control',
-                'id': 'created_at',
-                'placeholder': 'Enter date create',
+                "id": 'created_at',
                 'type': 'date',
-                'name': 'created_at',
+                'class': 'form-control',
             }),
         }
         

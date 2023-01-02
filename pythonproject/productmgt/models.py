@@ -102,15 +102,4 @@ class InvoiceActivities(models.Model):
     
     def __str__(self):
         return self.id
-    
-class Accounts(models.Model):
-    STATUS_CHOICE=(
-        ('bank', 'Bank Accounts'),
-        ('static', 'Static Accounts')
-    )
-    name = models.CharField(max_length=120, blank=False)
-    description = models.CharField(max_length=120)
-    type = models.CharField(max_length=50, choices=STATUS_CHOICE)
-
-    def __str__(self):
-        return self.name
+  

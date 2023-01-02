@@ -32,12 +32,12 @@
             <div class="inner">
               <h3>{{total_sales}}</h3>
 
-              <p>Total Sales</p>
+              <p>Total sales {{filter}}</p>
             </div>
             <div class="icon">
               <i class="fas fa-shopping-cart"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="{% url 'invoice'%}" class="small-box-footer">
               More info <i class="fas fa-arrow-circle-right"></i>
             </a>
           </div>
@@ -49,12 +49,12 @@
             <div class="inner">
               <h3> {{cash_inflows|intcomma}}</h3>
 
-              <p>Cash Inflow</p>
+              <p>Cash inflow {{filter}}</p>
             </div>
             <div class="icon">
               <i class="fas fa fa-dollar-sign"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="{% url 'payments'%}" class="small-box-footer">
               More info <i class="fas fa-arrow-circle-right"></i>
             </a>
           </div>
@@ -71,7 +71,7 @@
             <div class="icon">
               <i class="fas fa-user-plus"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="{% url 'people'%}" class="small-box-footer">
               More info <i class="fas fa-arrow-circle-right"></i>
             </a>
           </div>
@@ -88,7 +88,7 @@
             <div class="icon">
               <i class="fas fa-chart-pie"></i>
             </div>
-            <a href="#" class="small-box-footer">
+            <a href="{% url 'products'%}" class="small-box-footer">
               More info <i class="fas fa-arrow-circle-right"></i>
             </a>
           </div>
@@ -133,10 +133,12 @@
               Customers revenue {{filter}}
             </div>
             <div class="card-body">
+              
               {% for customer_revenue in customers_revenue%}
+              <span class="small bold">{{customer_revenue.name|capfirst}}</span>
               <div class="progress mb-3">
-                <div class="progress-bar bg-success" role="progressbar" aria-valuenow="{{customer_revenue.customer_invoice_amount_sum}}" aria-valuemin="0" aria-valuemax="{{customer_revenue.total_invoice_amount}}" style="width: {{customer_revenue.customer_invoice_amount_sum}}%">
-                  <span class="sr-only">{{customer_revenue.customer_invoice_amount_sum}} Complete (success)</span>
+                <div class="progress-bar bg-default" role="progressbar" aria-valuenow="{{customer_revenue.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{customer_revenue.percentage}}%">
+                  <span class="sr-only">{{customer_revenue.percentage}} Complete (success)</span>
                 </div>
               </div>
               {% endfor%}

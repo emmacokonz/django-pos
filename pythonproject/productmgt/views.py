@@ -186,7 +186,7 @@ def new_people(request):
             People.objects.create(**data)
             
             messages.success(request, data["name"]+" added to your list of "+data["people_type"]+".")
-            return redirect(productsList)
+            return redirect(people)
             
         
     context={
@@ -235,7 +235,7 @@ def disable_people(request, people_id):
 
 @login_required
 def invoice(request):
-    invoices = Invoice.objects.select_related().filter(Q(invoice_type = 'sales') | Q(invoice_type = 'sales_return'))
+    invoices = Invoice.objects.select_related().filter(Q(invoice_type = 'sales') | Q(invoice_type = 'sales_return')).order_by('-created_at')
     
     context={
         "invoices": invoices,
@@ -441,7 +441,7 @@ def print_invoice(request, invoice_no):
 @login_required
 def purchase(request):
     
-    invoices = Invoice.objects.select_related().filter(Q(invoice_type = 'purchase') | Q(invoice_type = 'purchase_return'))
+    invoices = Invoice.objects.select_related().filter(Q(invoice_type = 'purchase') | Q(invoice_type = 'purchase_return')).order_by('-created_at')
     
     context={
         "purchases": invoices,
