@@ -2,7 +2,7 @@
 {% extends 'base/base.html' %}
 {% load humanize%}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{{title}}{% endblock %}
 
 {% block content %}
 
@@ -12,11 +12,13 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>{{dashboard}}Dashboard__</h1>
+          <h1>{{title}}</h1>
         </div>
         <div class="col-sm-6">
           <div class="float-sm-right">
-              shortcuts
+            <a class="btn btn-sm btn-default" href="{% url 'create_invoice'%}">New Invoice</a>
+            <a class="btn btn-sm btn-default" href="{% url 'receive_payment'%}">Receive Payment</a>
+            <a class="btn btn-sm btn-default" href="{% url 'make_transfer'%}">Make Transfer</a>
           </div>
         </div>
       </div>

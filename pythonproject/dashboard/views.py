@@ -27,6 +27,7 @@ OUT_OF_STOCK = "out-of-stock"
 
 def index(request):
     context = {
+        'title': 'Dashboard',
         'filter': DATE_RANGE_SETTINGS,
         'total_sales': get_total_sales()['count'],
         'cash_inflows': get_cash_inflow()["cash_inflow"],
