@@ -134,7 +134,10 @@ EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 
 LOGIN_REDIRECT_URL = "/"
+<<<<<<< HEAD
 LOGOUT_REDIRECT_URL = "/login"
+=======
+>>>>>>> 57853daf78ae168d4212ed4e12bb30688e9927ab
 LOGIN_URL = 'login'
 
 CART_SESSION_ID = 'cart'
