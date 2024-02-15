@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-bkfgj4m*4(ka)kk441^u+@+si26$9%6ju6#mf=58^-lmz1uhlr
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['techcoderr.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -134,7 +134,8 @@ EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 
 LOGIN_REDIRECT_URL = "/"
-LOGOUT_REDIRECT_URL = "/accounts/login"
+LOGOUT_REDIRECT_URL = "/login"
+LOGIN_URL = 'login'
 
 CART_SESSION_ID = 'cart'
 

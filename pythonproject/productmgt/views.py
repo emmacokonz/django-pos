@@ -39,7 +39,7 @@ def productDetails(request, product_code):
     for tt in invActivities:
         tt.amount = tt.price * tt.quantity
         tt.type = get_invoice_details_by_id(tt.invoice_no_id).invoice_type
-    
+
     context = {
         "product": thisProduct,
         'product_activities': invActivities,
@@ -68,11 +68,11 @@ def new_product(request):
             }
             if data['quantity'] == 0:
                 data['status'] = 'out of stock'
-                
+
             Products.objects.create(**data)
             messages.success(request, data['name']+" Added to your list of products.")
             return redirect(productsList)
-            
+
     context = {
         'form' : forms,
         "title" : "Product Creation ",
@@ -83,17 +83,17 @@ def new_product(request):
 def edit_product(request, product_code):
     thisProduct1 = get_product_details(product_code)
     #thisProduct1 =Products.objects.get(pk=thisProductss.id)
-    
+
     forms = product_form(request.POST or None, instance=thisProduct1)
-    
+
     if request.method == "POST":
         if forms.is_valid():
             if forms.has_changed:
                 forms.save()
                 messages.success(request, "Product update was successful.")
-                
+
             return redirect(productsList)
-            
+
     context={
         'form': forms,
         'title': 'Edit '+thisProduct1.name,
@@ -103,9 +103,9 @@ def edit_product(request, product_code):
 
 @login_required
 def delete_product(request, product_code):
-    
+
     product = get_product_details(product_code)
-    
+
     activity = InvoiceActivities.objects.filter(products_id = product.id)
     if activity :
         if product.status != 'disabled':
@@ -115,35 +115,35 @@ def delete_product(request, product_code):
         return redirect(productsList)
     #product.delete()
     messages.success(request, 'Product deleted.')
-    
+
     return redirect(productsList)
 
 @login_required
 def enable_product(request, product_code):
     qty = get_product_details(product_code).quantity
-    
+
     if qty > 0 :
         Products.objects.filter(product_code=product_code).update(status = 'in-stock')
     else:
         Products.objects.filter(product_code=product_code).update(status = 'out-of-stock')
-        
+
     messages.success(request, 'Product Activivated and ready for invoicing.')
     return redirect('product_details', product_code=product_code)
-    
+
 @login_required
 def disable_product(request, product_code):
     Products.objects.filter(product_code=product_code).update(status = 'disabled')
-        
+
     messages.warning(request, 'Product deactivated and will not be available for invoicing untill you activate it.')
     return redirect('product_details', product_code=product_code)
-    
+
 @login_required
 def people(request):
     people=People.objects.all().order_by("id")
     payments = Account_activities.objects.filter(Q(payment_type='sales') | Q(payment_type = 'bill')).order_by("id")
     invoices = Invoice.objects.all().order_by("id")
     result_list =  sorted(chain(payments,invoices),reverse=True,key=attrgetter('created_at'))
-    
+
     context={
         "people":people,
         'title': 'People',
@@ -157,7 +157,7 @@ def peopleDetails(request, people_id):
     payments = Account_activities.objects.filter(Q(Q(payment_type='sales') | Q(payment_type = 'bill')) and Q(applied_to = person)).order_by("id")
     invoices = Invoice.objects.filter(people = person).order_by("id")
     result_list =  sorted(chain(payments,invoices),reverse=True,key=attrgetter('created_at'))
-    
+
     context={
         'person':person,
         'title': 'Details about  '+person.name,
@@ -170,7 +170,7 @@ def peopleDetails(request, people_id):
 @login_required
 def new_people(request):
     forms = people_form()
-    
+
     if request.method == "POST":
         forms = people_form(request.POST)
         if forms.is_valid():
@@ -184,11 +184,11 @@ def new_people(request):
                 "balance": forms.cleaned_data['balance'],
             }
             People.objects.create(**data)
-            
+
             messages.success(request, data["name"]+" added to your list of "+data["people_type"]+".")
             return redirect(people)
-            
-        
+
+
     context={
         "form": forms,
         'title': 'Create People'
@@ -211,32 +211,32 @@ def edit_people(request,people_id):
         "form": forms,
         "title": 'Edit '+instance.name+' Details'
     }
-    
+
     return render(request,'people/edit.html',context)
 
 @login_required
 def enable_people(request, people_id):
     person = People.objects.get(pk = people_id)
     People.objects.filter(pk=people_id).update(status = 'active')
-        
+
     messages.success(request, person.name+' activation was successful.')
     return redirect(peopleDetails, people_id)
-    
+
 @login_required
 def disable_people(request, people_id):
     person = People.objects.get(pk = people_id)
     People.objects.filter(pk=people_id).update(status = 'disabled')
-        
+
     #messages.warning(request, person.name+'is  deactivated and will not be available for invoicing and payments untill you activate it.')
     return redirect(peopleDetails, people_id)
-    
-    
+
+
 
 
 @login_required
 def invoice(request):
     invoices = Invoice.objects.select_related().filter(Q(invoice_type = 'sales') | Q(invoice_type = 'sales_return')).order_by('-created_at')
-    
+
     context={
         "invoices": invoices,
         'title':"Invoice",
@@ -246,9 +246,9 @@ def invoice(request):
 @login_required
 def invoiceDetails(request, invoice_no):
     invoice = Invoice.objects.get(invoice_no = invoice_no)
-   
+
     details = InvoiceActivities.objects.select_related('products').filter(invoice_no_id=invoice.pk).annotate(amount=F("price")*F('quantity'))
-    
+
     context={
         'invoice_meta': invoice,
         'subtotal': invoice.invoice_amount,
@@ -264,7 +264,7 @@ def create_invoice(request):
     formset = InvoiceDetailsFormSet()
     for forms in formset:
         forms.fields["products"].queryset = Products.objects.filter(Q(status='in-stock') | Q(status='out-of-stock'))
-    
+
     context = {
         "form": form,
         'formset': formset,
@@ -279,13 +279,13 @@ def edit_invoice(request, invoice_no):
     invoice_instance = Invoice.objects.get(invoice_no = invoice_no)
     form = InvoiceForm(request.POST or None, instance=invoice_instance)
     form.fields["people"].queryset = People.objects.filter(people_type='customer').filter(status='active')
-    
+
     invoice_products = InvoiceActivities.objects.filter(invoice_no_id = invoice_instance.pk)
     if len(invoice_products) > form_len:
         form_len = len(invoice_products) + form_len
     else:
         form_len = form_len - len(invoice_products)
-        
+
     ProductFormset = inlineformset_factory(Invoice, InvoiceActivities, form=InvoiceDetailsForm, extra=form_len, can_delete=True)
     formset = ProductFormset(instance=invoice_instance, prefix='invoice')
     #print(formset)
@@ -298,10 +298,10 @@ def edit_invoice(request, invoice_no):
             invoice_amount = 0
             invoice_quantity = 0
             people_by_form = People.objects.get(name = formdata['people'])
-            
+
             #update products quantity prviously in the invoice
             for invoice_product in invoice_products:
-                
+
                 #update_product_quantity_before_delete(invoice_product).save()
                 current_product = Products.objects.get(pk = invoice_product.products.id)
                 print('current product quantity: ', current_product.quantity)
@@ -309,16 +309,16 @@ def edit_invoice(request, invoice_no):
                 current_product.quantity = old_product_quantity
                 print('old product quantity: ', old_product_quantity)
                 current_product.save()
-                
+
             invoice_products.delete() #delete previous products in the invoice
             for products in formset:
-                
+
                 prod = products.cleaned_data
                 if prod.get("products") is not None:
                     invoice_amount += float(prod.get("price") * prod.get("quantity"))
                     invoice_quantity += float(prod.get("quantity"))
                     print('invoice Amount:', invoice_amount)
-                    
+
                     data = {
                         'products': prod.get('products'),
                         'price': prod.get('price'),
@@ -327,14 +327,14 @@ def edit_invoice(request, invoice_no):
                         'invoice_no': invoice_instance
                     }
                     InvoiceActivities.objects.create(**data)
-                    
+
                     #update product quantity
                     product = Products.objects.get(pk = data['products'].id)
                     quantity = product.quantity - data['quantity']
                     product.quantity = quantity
                     print('new product quantity: ', quantity)
                     product.save()
-            
+
             #update user balance
             if old_people.name == formdata['people'].name:
                 old_balance = invoice_instance.people.balance - invoice_instance.invoice_amount
@@ -347,20 +347,20 @@ def edit_invoice(request, invoice_no):
             print("balance: ", balance)
             new_balance_update={'balance':balance}
             People.objects.filter(name = formdata['people']).update(**new_balance_update)
-                
-            #update invoice 
+
+            #update invoice
             data ={'total_quantity':invoice_quantity, 'invoice_amount':invoice_amount, 'people':people_by_form}
             Invoice.objects.filter(invoice_no = invoice_no).update(**data)
-            
+
             #update invoice actitvities
-            
+
             #update product quantity
             messages.success(request, 'Update was susseccful')
             return redirect('invoice')
         else:
-            messages.error(request, 'Unknown error happened!.') 
-            
-            
+            messages.error(request, 'Unknown error happened!.')
+
+
     context = {
         "form": form ,
         'formset': formset,
@@ -371,49 +371,49 @@ def edit_invoice(request, invoice_no):
 
 @login_required
 def update_product_quantity_before_delete(product_instance):
-    
+
     current_product = Products.objects.get(pk = product_instance.products.id)
     print('current product quantity: ', current_product.quantity)
     old_product_quantity = current_product.quantity + product_instance.quantity
     current_product.quantity = old_product_quantity
     print('old product quantity: ', old_product_quantity)
-    
+
     return current_product
 
 @login_required
 def delete_invoice(request, invoice_no):
     context ={}
     invoice_instance = Invoice.objects.get(invoice_no = invoice_no)
-    
+
     invoice_products = InvoiceActivities.objects.select_related('products').filter(invoice_no_id=invoice_instance.pk).annotate(amount=F("price")*F('quantity'))
-    
+
     #invoice_products = InvoiceActivities.objects.filter(invoice_no_id = invoice_instance.pk)
     if request.method == 'POST':
-        
+
         # update customer account balance.
         old_balance = invoice_instance.people.balance - invoice_instance.invoice_amount
         balance = {'balance':old_balance}
         print('balance: ',old_balance)
-        
+
         People.objects.filter(pk = invoice_instance.people.id).update(**balance)
-        
+
         #update each product quantity.
-        for product in invoice_products:   
+        for product in invoice_products:
             current_product = Products.objects.get(pk = product.products.id)
             print('current product quantity: ', current_product.quantity)
             old_product_quantity = current_product.quantity + product.quantity
             current_product.quantity = old_product_quantity
             print('old product quantity: ', old_product_quantity)
-            current_product.save() 
+            current_product.save()
             #update_product_quantity_before_delete(product).save()
             product.delete()
-            
+
         # delete the invoice and the products.
         invoice_instance.delete()
         messages.success(request, 'Invoice deleted successfully')
-    
+
         return redirect('invoice')
-    
+
     messages.warning(request, 'Note: This action can not be undone. ARE YOU SURE YOU WANT TO CONTINUE ?')
     context={
         "title": "Delete: "+invoice_no,
@@ -426,23 +426,23 @@ def delete_invoice(request, invoice_no):
 @login_required
 def print_invoice(request, invoice_no):
     invoice = Invoice.objects.get(invoice_no = invoice_no)
-   
+
     details = InvoiceActivities.objects.select_related('products').filter(invoice_no_id=invoice.pk).annotate(amount=F("price")*F('quantity'))
-    
+
     context={
         'invoice_meta': invoice,
         'subtotal': invoice.invoice_amount,
         'details': details,
         "title": invoice.invoice_no,
     }
-    
+
     return render(request, "invoice/print.html", context)
-    
+
 @login_required
 def purchase(request):
-    
+
     invoices = Invoice.objects.select_related().filter(Q(invoice_type = 'purchase') | Q(invoice_type = 'purchase_return')).order_by('-created_at')
-    
+
     context={
         "purchases": invoices,
         'title':"Purchases",
@@ -457,7 +457,7 @@ def create_purchase(request):
     formset = InvoiceDetailsFormSet()
     for forms in formset:
         forms.fields["products"].queryset = Products.objects.filter(Q(status='in-stock') | Q(status='out-of-stock'))
-    
+
     context = {
         "form": form,
         'formset': formset,
@@ -468,9 +468,9 @@ def create_purchase(request):
 @login_required
 def purchaseDetails(request, purchase_no):
     purchase = Invoice.objects.get(invoice_no = purchase_no)
-   
+
     details = InvoiceActivities.objects.select_related('products').filter(invoice_no_id=purchase.pk).annotate(amount=F("price")*F('quantity'))
-    
+
     context={
         'invoice_meta': purchase,
         'subtotal': purchase.invoice_amount,
@@ -486,16 +486,16 @@ def edit_purchase(request, invoice_no):
     invoice_instance = Invoice.objects.get(invoice_no = invoice_no)
     form = InvoiceForm(request.POST or None, instance=invoice_instance)
     form.fields["people"].queryset = People.objects.filter(people_type='vendor').filter(status='active')
-    
+
     invoice_products = InvoiceActivities.objects.filter(invoice_no_id = invoice_instance.pk)
     if len(invoice_products) > form_len:
         form_len = len(invoice_products) + form_len
     else:
         form_len = form_len - len(invoice_products)
-        
+
     ProductFormset = inlineformset_factory(Invoice, InvoiceActivities, form=InvoiceDetailsForm, extra=form_len, can_delete=True)
     formset = ProductFormset(instance=invoice_instance, prefix='purchase')
-    
+
     if request.method == 'POST':
         formset = ProductFormset(request.POST, instance=invoice_instance, prefix='purchase')
         old_people = invoice_instance.people
@@ -504,24 +504,24 @@ def edit_purchase(request, invoice_no):
             invoice_amount = 0
             invoice_quantity = 0
             people_by_form = People.objects.get(name = formdata['people'])
-            
+
             #update products quantity prviously in the invoice
             for invoice_product in invoice_products:
-                
+
                 #update_product_quantity_before_delete(invoice_product).save()
                 current_product = Products.objects.get(pk = invoice_product.products.id)
                 old_product_quantity = current_product.quantity - invoice_product.quantity
                 current_product.quantity = old_product_quantity
                 current_product.save()
-                
+
             invoice_products.delete() #delete previous products in the invoice
             for products in formset:
-                
+
                 prod = products.cleaned_data
                 if prod.get("products") is not None:
                     invoice_amount += float(prod.get("price") * prod.get("quantity"))
                     invoice_quantity += float(prod.get("quantity"))
-                    
+
                     data = {
                         'products': prod.get('products'),
                         'price': prod.get('price'),
@@ -530,13 +530,13 @@ def edit_purchase(request, invoice_no):
                         'invoice_no': invoice_instance
                     }
                     InvoiceActivities.objects.create(**data)
-                    
+
                     #update product quantity
                     product = Products.objects.get(pk = data['products'].id)
                     quantity = product.quantity + data['quantity']
                     product.quantity = quantity
                     product.save()
-            
+
             #update user balance
             if old_people.name == formdata['people'].name:
                 old_balance = invoice_instance.people.balance - invoice_instance.invoice_amount
@@ -547,20 +547,20 @@ def edit_purchase(request, invoice_no):
                 balance = float(people_by_form.balance) + float(invoice_amount)
             new_balance_update={'balance':balance}
             People.objects.filter(name = formdata['people']).update(**new_balance_update)
-                
-            #update invoice 
+
+            #update invoice
             data ={'total_quantity':invoice_quantity, 'invoice_amount':invoice_amount, 'people':people_by_form}
             Invoice.objects.filter(invoice_no = invoice_no).update(**data)
-            
+
             #update invoice actitvities
-            
+
             #update product quantity
             messages.success(request, 'Update was susseccful')
             return redirect('purchase')
         else:
-            messages.error(request, 'Unknown error happened!.') 
-            
-            
+            messages.error(request, 'Unknown error happened!.')
+
+
     context = {
         "form": form ,
         'formset': formset,
@@ -574,20 +574,20 @@ def edit_purchase(request, invoice_no):
 def delete_purchase(request, purchase_no):
     context ={}
     purchase_instance = Invoice.objects.get(invoice_no = purchase_no)
-    
+
     invoice_products = InvoiceActivities.objects.select_related('products').filter(invoice_no_id=purchase_instance.pk).annotate(amount=F("price")*F('quantity'))
-    
+
     if request.method == 'POST':
-        
+
         # update customer account balance.
         old_balance = purchase_instance.people.balance - purchase_instance.invoice_amount
         balance = {'balance':old_balance}
         print('balance: ',old_balance)
-        
+
         People.objects.filter(pk = purchase_instance.people.id).update(**balance)
-        
+
         #update each product quantity.
-        for product in invoice_products:   
+        for product in invoice_products:
             current_product = Products.objects.get(pk = product.products.id)
             old_product_quantity = current_product.quantity - product.quantity
             current_product.quantity = old_product_quantity
@@ -596,17 +596,17 @@ def delete_purchase(request, purchase_no):
                 current_product.status = 'in-stock'
             else:
                 current_product.status = 'out-of-stock'
-            
-            current_product.save() 
+
+            current_product.save()
             #update_product_quantity_before_delete(product).save()
             product.delete()
-            
+
         # delete the invoice and the products.
         purchase_instance.delete()
         messages.success(request, 'Purchase deleted successfully')
-    
+
         return redirect('purchase')
-    
+
     messages.warning(request, 'Note: This action can not be undone. ARE YOU SURE YOU WANT TO CONTINUE ?')
     context={
         "title": "Delete: "+purchase_no,
@@ -619,18 +619,18 @@ def delete_purchase(request, purchase_no):
 @login_required
 def print_purchase(request, purchase_no):
     purchase = Invoice.objects.get(invoice_no = purchase_no)
-   
+
     details = InvoiceActivities.objects.select_related('products').filter(invoice_no_id=purchase.pk).annotate(amount=F("price")*F('quantity'))
-    
+
     context={
         'invoice_meta': purchase,
         'subtotal': purchase.invoice_amount,
         'details': details,
         "title": purchase.invoice_no,
     }
-    
+
     return render(request, "purchase/print.html", context)
-   
+
 
 @login_required
 def reports(request):
@@ -643,35 +643,35 @@ def payments(request):
 def current_url_name(request):
     next = request.META.get('HTTP_REFERER', None) or '/'
     return resolve(urlparse(next)[2]).url_name
-    
+
 def product_revenue_activity(product_id,invoice_type='sales',price=0):
     invoice = Invoice.objects.filter(invoice_type=invoice_type)
-    
+
     sum_of_quantity = 0
     sum_of_prices = 0
     sum_of_amount = 0
     for each_invoice in invoice:
-        
+
         products = InvoiceActivities.objects.filter(Q(invoice_no_id=each_invoice.id) & Q(products_id = product_id)).aggregate(each_amount= Sum(F("price")*F("quantity")),sum_of_quantity= Sum("quantity"),sum_of_prices= Sum("price"))
-       
-        
-        
+
+
+
         if products['each_amount'] is not None:
             sum_of_quantity = sum_of_quantity + products["sum_of_quantity"]
             sum_of_prices = sum_of_prices + products['sum_of_prices']
             sum_of_amount = sum_of_amount + products["each_amount"]
-            
+
     if sum_of_quantity != 0:
         average_price = float(sum_of_prices/sum_of_quantity)
     else:
         average_price = price
     context = {
         "total_amount": Decimal(sum_of_amount),
-        "average_price": Decimal(average_price), 
+        "average_price": Decimal(average_price),
         "total_quantity_invoiced": sum_of_quantity
     }
     return context
-   
+
 
 def get_product_details(product_code):
     try:
@@ -694,7 +694,10 @@ def generate_product_code():
 
 def product_progress(qty_in_stock=0,reorder_point=1):
     expected_qty = int(reorder_point) * 5
-    percentage = float((qty_in_stock * 100)/expected_qty)
+    if expected_qty != 0:
+        percentage = float((qty_in_stock * 100)/expected_qty)
+    else:
+        percentage = 0
     if percentage >= 100:
         progress_text = 'bg-success'
     elif percentage >= 70:
@@ -739,7 +742,7 @@ def getAjaxProductDetails(request):
         return JsonResponse(context, status=200)
     else:
         pass
-    
+
     # send to client side.
     return render(request, "errors/404.html")
 
@@ -763,7 +766,7 @@ def getAjaxPeopleDetails(request):
                 context['found'] = False
                 context["error"] = "Customer does not exist."
                 return JsonResponse( context, status=404)
-        else: 
+        else:
             context ={
                 'address': "&nbsp;",
                 "phone": "&nbsp;",
@@ -772,7 +775,7 @@ def getAjaxPeopleDetails(request):
             }
             # send to client side.
             return JsonResponse(context, status=200)
-    
+
     # some error occured
     return render(request, 'errors/404.html')
 
@@ -780,13 +783,13 @@ def createAjaxInvoice(request):
     # request should be ajax and method should be POST.
     if is_ajax(request) and request.method == "POST":
         #get the people id
-        
+
         person_id = int(request.POST.get('people'))
         subtotal = request.POST.get('subtotal', None)
         products = request.POST.get('products', None)
         total_quantity = request.POST.get('total_quantity', None)
-        
-        context = { 
+
+        context = {
                    "print":False,
                    "error" : False,
         }
@@ -797,7 +800,7 @@ def createAjaxInvoice(request):
             context['error'] = True
             context['message'] = 'The customer/vendor does not exit. Please choose another customer/vendor.'
             return JsonResponse(context, status=200)
-        
+
         #save the invoice to generate the id
         data ={
             'total_quantity' : total_quantity,
@@ -807,67 +810,66 @@ def createAjaxInvoice(request):
         }
         if people_type == 'vendor':
             data['invoice_type'] = 'purchase'
-        
+
         new_invoice_instance = Invoice.objects.create(**data)
-        
+
         #convert string from ajax to a list of dictionary
         context['person1'] = products
-        
+
         if int(request.POST.get('items', None)) > 1:
             products_ = list(eval(products))
         else:
             #for single item
             products_ = []
             products_.append(json.loads(products))
-        
+
         for product in products_:
-            
+
             data = {
                 'invoice_no': new_invoice_instance,
                 'products': Products.objects.get(pk=product['product']),
                 'quantity': product['quantity'],
                 'price':product['price']
             }
-            
+
             InvoiceActivities.objects.create(**data)
-            
+
             #update product quantity
             db_product = Products.objects.get(pk = product['product'])
-            
+
             if people_type == 'customer':
                 cal_quantity = float(db_product.quantity) - float(data['quantity'])
                 invoice_type = 'invoice'
             elif people_type == 'vendor':
                 cal_quantity = float(db_product.quantity) + float(data['quantity'])
                 invoice_type = 'purchase'
-                
+
             if cal_quantity <= 0 and db_product.status != 'disabled':
                 db_product.status = 'out-of-stock'
             elif cal_quantity >= 0 and db_product.status != 'disabled':
                 db_product.status = 'in-stock'
-                
+
             db_product.quantity = cal_quantity
             db_product.save()
-        
+
         #update customer balance
         person = People.objects.get(pk = person_id, status = 'active')
         person.balance = float(person.balance) + float(subtotal)
         person.save()
-        
+
         messages.success(request,'Invoice created successfully.')
         if request.POST.get('action', None) == 'save_print_invoice':
             context['print'] = True
             context['invoice_no'] = reverse('print_invoice',args=(new_invoice_instance.invoice_no,))
         else:
             context['redirect'] = invoice_type
-            
+
         return JsonResponse(context, status=200)
     # some error occured
     return render(request, 'errors/404.html')
 
 
-        
+
 ####################END OF AJAX FUNCTIONS#######################
-        
-        
-        
+
+
