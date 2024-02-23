@@ -51,7 +51,10 @@ def get_customers_revenue():
         total_invoice_amount = Sum('invoice__invoice_amount', default=0, filter=Q(invoice__created_at__range=(get_settings_date_range()[0],get_settings_date_range()[1]))))
    
     for cr in customers_revenue :
-        p = float(cr['customer_invoice_amount_sum']) * 100/float(total_revenue['total_invoice_amount'])
+        if total_revenue['total_invoice_amount'] != 0:
+            p = float(cr['customer_invoice_amount_sum']) * 100/float(total_revenue['total_invoice_amount'])
+        else:
+            p = 0
         cr['percentage'] = p
        
     

@@ -1,9 +1,10 @@
 {% load static%}
+{% load active_link_tags %}
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="../../index3.html" class="brand-link">
+    <a href="{%url 'dashboard' %}" class="brand-link">
       <img src='{% static "dist/img/AdminLTELogo.png" %}' alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">AdminLTE 3</span>
+      <span class="brand-text font-weight-light">Techcoderr-POS</span>
     </a>
     <!-- Sidebar -->
     <div class="sidebar">
@@ -13,74 +14,75 @@
       <!-- Add icons to the links using the .nav-icon class
            with font-awesome or any other icon font library -->
       <li class="nav-item">
-        <a href="{% url "dashboard" %}" class="nav-link">
+        {% url 'dashboard' as url %}
+        <a href="{{url}}" class="nav-link {% active_link 'dashboard' 'active' %}">
           <i class="nav-icon fas fa-tachometer-alt"></i>
           <p>Dashboard</p>
         </a>
       </li>
       <li class="nav-item">
-        {% url 'products' as product_url %}
-        <a href="{{ product_url }}" class="nav-link {% if request.path ==  product_url %}active{% endif%}">
+        {% url 'products' as url %}
+        <a href="{{url}}" class="nav-link {% active_link 'products' 'active' %}">
           <i class="nav-icon fas fa-th"></i>
           <p>Products</p>
         </a>
       </li>
       <li class="nav-item">
-        {% url 'invoice' as invoice_url %}
-        <a href="{{ invoice_url }}" class="nav-link {% if request.path ==  invoice_url %}active{% endif%}">
+        {% url 'invoice' as url %}
+        <a href="{{url}}" class="nav-link {% active_link 'invoice' 'active' %}">
           <i class="nav-icon fas fa-copy"></i>
           <p>Invoice</p>
         </a>
       </li>
       <li class="nav-item">
-        {% url 'purchase' as purchase_url %}
-        <a href="{{ purchase_url }}" class="nav-link {% if request.path ==  purchase_url %}active{% endif%}">
+        {% url 'purchase' as url %}
+        <a href="{{url}}" class="nav-link {% active_link 'purchase' 'active' %}">
            <i class="nav-icon fas fa-copy"></i>
           <p>Purchases</p>
         </a>
       </li>
       <li class="nav-item">
-        {% url 'people' as people_url %}
-        <a href="{{ people_url }}" class="nav-link {% if request.path ==  people_url %}active{% endif%}">
+        {% url 'people' as url %}
+        <a href="{{url}}" class="nav-link {% active_link 'people' 'active' %}">
           <i class="nav-icon fas fa-tree"></i>
           <p>People</p>
         </a>
       </li>
       <li class="nav-item">
-        {% url 'accounts' as accounts_url %}
-        <a href="{{ accounts_url }}" class="nav-link {% if request.path ==  accounts_url %}active{% endif%}">
+        {% url 'accounts' as url %}
+        <a href="{{url}}" class="nav-link {% active_link 'accounts' 'active' %}">
           <i class="nav-icon fas fa-copy"></i>
           <p>Accounts</p>
         </a>
       </li>
       <li class="nav-item">
-        {% url 'payments' as payment_url%}
-        <a href="{{ payment_url }}" class="nav-link {% if request.path ==  payment_url %}active{% endif %}">
+        {% url 'payments' as url%}
+        <a href="{{url}}" class="nav-link {% active_link 'payments' 'active' %}">
           <i class="nav-icon fas fa-money-check"></i>
           <p>Payments</p>
         </a>
       </li>
       <li class="nav-item">
-        {% url 'expenses' as expenses_url%}
-        <a href="{{ expenses_url }}" class="nav-link {% if request.path ==  expenses_url %}active{% endif %}">
+        {% url 'expenses' as url%}
+        <a href="{{url}}" class="nav-link {% active_link 'expenses' 'active' %}">
           <i class="nav-icon fas fa-dollar-sign"></i>
           <p>Expenses</p>
         </a>
       </li>
-      <li class="nav-item">
-        {% url 'reports' as reports_url%}
-        <a href="{{ reports_url }}" class="nav-link {% if request.path ==  reports_url %}active{% endif %}">
+      <!--<li class="nav-item">
+        {% url 'reports' as url%}
+        <a href="{{ url }}" class="nav-link {% if request.path ==  reports_url %}active{% endif %}">
           <i class="nav-icon fas fa-chart-pie"></i>
           <p>Reports</p>
         </a>
       </li>
       <li class="nav-item">
-        {% url 'users' as users_url%}
-        <a href="{{ users_url }}" class="nav-link {% if request.path ==  users_url %}active{% endif %}">
+        {% url 'users' as url%}
+        <a href="{{ url }}" class="nav-link {% if request.path ==  users_url %}active{% endif %}">
           <i class="nav-icon fas fa-table"></i>
           <p>Users</p>
         </a>
-      </li>
+      </li>-->
       
     </ul>
   </nav>
