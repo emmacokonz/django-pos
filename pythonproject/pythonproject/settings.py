@@ -134,15 +134,9 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 
-<<<<<<< HEAD
-LOGIN_REDIRECT_URL = "/dashboard/"
-LOGOUT_REDIRECT_URL = '/login'
-LOGIN_URL = '/login'
-=======
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/login"
 LOGIN_URL = 'login'
->>>>>>> 899f741621310b5298f6c4893153302be6bbed3a
 
 CART_SESSION_ID = 'cart'
 
